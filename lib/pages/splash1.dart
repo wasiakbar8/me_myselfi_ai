@@ -24,7 +24,7 @@ class _SplashScreen1State extends State<SplashScreen1> with SingleTickerProvider
     // Navigate to next screen after 30 seconds
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, '/splash2');
+        Navigator.pushReplacementNamed(context, '/login');
       }
     });
   }

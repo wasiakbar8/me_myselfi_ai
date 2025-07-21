@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:me_myself_ai/features/diary/views/diary_screen.dart';
 
 class AnimatedQuickToolsWidget extends StatefulWidget {
   const AnimatedQuickToolsWidget({super.key});
@@ -15,61 +16,71 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
   late Animation<Offset> _slideAnimation;
   final GlobalKey _widgetKey = GlobalKey();
 
-  final List<List<QuickToolItem>> _tools = [
-    [
-      QuickToolItem(
-        icon: Icons.security,
-        title: 'Vault',
-        subtitle: 'Secure Storage',
-        color: const Color(0xFF2196F3),
-        onTap: () => print('Vault tapped'),
-      ),
-      QuickToolItem(
-        icon: Icons.attach_money,
-        title: 'Budget',
-        subtitle: 'Expense Track',
-        color: const Color(0xFF4CAF50),
-        onTap: () => print('Budget tapped'),
-      ),
-      QuickToolItem(
-        icon: Icons.book,
-        title: 'Diary',
-        subtitle: 'Daily Journal',
-        color: const Color(0xFF9C27B0),
-        onTap: () => print('Diary tapped'),
-      ),
-    ],
-    [
-      QuickToolItem(
-        icon: Icons.people,
-        title: 'Family',
-        subtitle: 'Sharing',
-        color: const Color(0xFFE91E63),
-        onTap: () => print('Family Sharing tapped'),
-      ),
-      QuickToolItem(
-        icon: Icons.share,
-        title: 'Integrate',
-        subtitle: 'Apps',
-        color: const Color(0xFF00BCD4),
-        onTap: () => print('Integrations tapped'),
-      ),
-      QuickToolItem(
-        icon: Icons.star,
-        title: 'Upgrade',
-        subtitle: 'Premium',
-        color: const Color(0xFFFFD60A),
-        backgroundColor: const Color(0xFFFFED29).withOpacity(0.3),
-        onTap: () => print('Upgrade Plan tapped'),
-      ),
-    ],
-  ];
+  late List<List<QuickToolItem>> _tools;
 
   @override
   void initState() {
     super.initState();
     _setupAnimations();
+    _initializeTools();
     _animationController.forward();
+  }
+
+  void _initializeTools() {
+    _tools = [
+      [
+        QuickToolItem(
+          icon: Icons.security,
+          title: 'Vault',
+          subtitle: 'Secure Storage',
+          color: const Color(0xFF2196F3),
+          onTap: () => print('Vault tapped'),
+        ),
+        QuickToolItem(
+          icon: Icons.attach_money,
+          title: 'Budget',
+          subtitle: 'Expense Track',
+          color: const Color(0xFF4CAF50),
+          onTap: () => print('Budget tapped'),
+        ),
+        QuickToolItem(
+          icon: Icons.book,
+          title: 'Diary',
+          subtitle: 'Daily Journal',
+          color: const Color(0xFF9C27B0),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const DiaryScreen()),
+            );
+          },
+        ),
+      ],
+      [
+        QuickToolItem(
+          icon: Icons.people,
+          title: 'Family',
+          subtitle: 'Sharing',
+          color: const Color(0xFFE91E63),
+          onTap: () => print('Family Sharing tapped'),
+        ),
+        QuickToolItem(
+          icon: Icons.share,
+          title: 'Integrate',
+          subtitle: 'Apps',
+          color: const Color(0xFF00BCD4),
+          onTap: () => print('Integrations tapped'),
+        ),
+        QuickToolItem(
+          icon: Icons.star,
+          title: 'Upgrade',
+          subtitle: 'Premium',
+          color: const Color(0xFFFFD60A),
+          backgroundColor: const Color(0xFFFFED29).withOpacity(0.3),
+          onTap: () => print('Upgrade Plan tapped'),
+        ),
+      ],
+    ];
   }
 
   void _setupAnimations() {
@@ -102,7 +113,6 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-
       key: _widgetKey,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(20),
@@ -177,7 +187,6 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
     return GestureDetector(
       onTap: () => _animateCardTap(tool),
       child: AnimatedContainer(
-
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -186,7 +195,6 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
           border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
         ),
         child: FittedBox(
-
           fit: BoxFit.scaleDown,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -227,7 +235,6 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
             ],
           ),
         ),
-
       ),
     );
   }

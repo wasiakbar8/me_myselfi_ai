@@ -77,7 +77,11 @@ class UnifiedInboxSection extends StatelessWidget {
           const SizedBox(height: AppConstants.containerPadding),
           PrimaryButton(
             text: 'Go to Inbox',
-            onPressed: onGoToInbox,
+            onPressed: (
+
+                ) {
+              Navigator.pushNamed(context, '/unified_inbox_screen');
+            },
             icon: Icons.arrow_forward,
           ),
         ],
