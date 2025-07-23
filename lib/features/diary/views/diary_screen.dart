@@ -22,7 +22,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
   List<DiaryEntry> _filteredEntries = [];
 
   // Sample diary entries
-  List<DiaryEntry> _allEntries = [
+  final List<DiaryEntry> _allEntries = [
     DiaryEntry(
       id: '1',
       title: 'Morning Reflections',

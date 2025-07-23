@@ -178,15 +178,4 @@ class HamburgerDrawer extends StatelessWidget {
     );
   }
 
-  // Widget _buildDrawerItem(BuildContext context,
-  //     {required IconData icon, required String title, required int index}) {
-  //   return ListTile(
-  //     leading: Icon(icon),
-  //     title: Text(title),
-  //     onTap: () {
-  //       onItemSelected(index);
-  //       Navigator.pop(context);
-  //     },
-  //   );
-  // }
 }

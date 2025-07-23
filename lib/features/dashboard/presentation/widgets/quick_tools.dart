@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:me_myself_ai/features/diary/views/diary_screen.dart';
 
+import '../../../vault/views/vault_password_screen.dart';
+
+
 class AnimatedQuickToolsWidget extends StatefulWidget {
   const AnimatedQuickToolsWidget({super.key});
 
@@ -34,7 +37,12 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
           title: 'Vault',
           subtitle: 'Secure Storage',
           color: const Color(0xFF2196F3),
-          onTap: () => print('Vault tapped'),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const VaultPasswordScreen()),
+            );
+          },
         ),
         QuickToolItem(
           icon: Icons.attach_money,

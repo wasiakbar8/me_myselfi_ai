@@ -5,7 +5,6 @@ import 'package:me_myself_ai/pages/login.dart';
 import 'package:me_myself_ai/pages/phone_verification.dart';
 import 'package:me_myself_ai/pages/signup.dart';
 import 'package:me_myself_ai/pages/splash1.dart';
-// import 'package:me_myself_ai/pages/splash2.dart';
 import 'core/theme/app_theme.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/diary/views/diary_newentry_screen.dart';
@@ -13,6 +12,8 @@ import 'features/diary/views/diary_screen.dart';
 import 'features/unified_inbox/views/unified_chat_screen.dart';
 import 'features/unified_inbox/views/unified_inbox_screen.dart';
 import 'features/unified_inbox/views/unified_newmsg_screen.dart';
+import 'features/vault/views/vault_password_screen.dart';
+import 'features/vault/views/vault_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +32,6 @@ class MyApp extends StatelessWidget {
       routes: {
 
         '/splash1': (context) => SplashScreen1(),
-        // '/splash2': (context) => SplashScreen2(),
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
         '/dashboard': (context) => const DashboardScreen(),
@@ -42,6 +42,10 @@ class MyApp extends StatelessWidget {
         '/unified_newmsg_screen': (context) => UnifiedNewMsgScreen(),
         '/diary_screen': (context) => DiaryScreen(),
         '/diary_newentry_screen': (context) => DiaryNewEntryScreen(),
+        '/vault_screen': (context) => VaultScreen(),
+        '/vault_password_screen': (context) => VaultPasswordScreen(),
+
+
       },
       debugShowCheckedModeBanner: false,
     );
