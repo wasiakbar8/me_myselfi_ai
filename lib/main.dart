@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:me_myself_ai/pages/forgot_password.dart';
 import 'package:me_myself_ai/pages/login.dart';
 import 'package:me_myself_ai/pages/phone_verification.dart';
+import 'package:me_myself_ai/pages/profile.dart';
 import 'package:me_myself_ai/pages/signup.dart';
 import 'package:me_myself_ai/pages/splash1.dart';
 import 'core/theme/app_theme.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
         '/dashboard': (context) => const DashboardScreen(),
+        '/profile': (context) => ProfilePage(),
         '/forgot_password': (context) => ForgotPasswordScreen() ,
         '/phone_verification': (context) => PhoneVerificationScreen(phoneNumber: '',) ,
         '/unified_inbox_screen': (context) => UnifiedInboxScreen(),

@@ -288,7 +288,7 @@ class _VaultNewEntryScreenState extends State<VaultNewEntryScreen> {
             onTap: _pickFiles,
             child: Container(
               width: double.infinity,
-              height: 200,
+              height: 220,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: const Color(0xFFFFD700),

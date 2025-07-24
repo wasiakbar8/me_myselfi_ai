@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:me_myself_ai/features/diary/views/diary_screen.dart';
+import 'package:me_myself_ai/pages/api_integrations.dart';
 
+import '../../../../pages/upgrade_premium.dart';
+import '../../../budget/views/budget_tracking_screen.dart';
 import '../../../vault/views/vault_password_screen.dart';
-
 
 class AnimatedQuickToolsWidget extends StatefulWidget {
   const AnimatedQuickToolsWidget({super.key});
 
   @override
-  State<AnimatedQuickToolsWidget> createState() => _AnimatedQuickToolsWidgetState();
+  State<AnimatedQuickToolsWidget> createState() =>
+      _AnimatedQuickToolsWidgetState();
 }
 
 class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
@@ -40,7 +43,9 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const VaultPasswordScreen()),
+              MaterialPageRoute(
+                builder: (context) => const VaultPasswordScreen(),
+              ),
             );
           },
         ),
@@ -49,7 +54,12 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
           title: 'Budget',
           subtitle: 'Expense Track',
           color: const Color(0xFF4CAF50),
-          onTap: () => print('Budget tapped'),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BudgetTrackingScreen()),
+            );
+          },
         ),
         QuickToolItem(
           icon: Icons.book,
@@ -66,18 +76,18 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
       ],
       [
         QuickToolItem(
-          icon: Icons.people,
-          title: 'Family',
-          subtitle: 'Sharing',
-          color: const Color(0xFFE91E63),
-          onTap: () => print('Family Sharing tapped'),
-        ),
-        QuickToolItem(
           icon: Icons.share,
           title: 'Integrate',
           subtitle: 'Apps',
           color: const Color(0xFF00BCD4),
-          onTap: () => print('Integrations tapped'),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ApiIntegrationsPage(),
+              ),
+            );
+          },
         ),
         QuickToolItem(
           icon: Icons.star,
@@ -85,7 +95,14 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
           subtitle: 'Premium',
           color: const Color(0xFFFFD60A),
           backgroundColor: const Color(0xFFFFED29).withOpacity(0.3),
-          onTap: () => print('Upgrade Plan tapped'),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const UpgradePremiumPage(),
+              ),
+            );
+          },
         ),
       ],
     ];
@@ -108,8 +125,13 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
       ),
     );
 
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutBack,
+          ),
+        );
   }
 
   @override
@@ -232,10 +254,7 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
               const SizedBox(height: 2),
               Text(
                 tool.subtitle,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFF535860),
-                ),
+                style: const TextStyle(fontSize: 12, color: Color(0xFF535860)),
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -253,9 +272,10 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
       vsync: this,
     );
 
-    final animation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-    );
+    final animation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
 
     controller.forward().then((_) {
       controller.reverse().then((_) {

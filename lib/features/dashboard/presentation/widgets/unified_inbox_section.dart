@@ -62,7 +62,7 @@ class UnifiedInboxSection extends StatelessWidget {
                 label: 'SMS',
                 count: messageStats.smsCount,
                 backgroundColor: AppColors.smsTeal,
-                icon: Icons.sms,
+                icon: FontAwesomeIcons.sms,
                 onTap: () => onServiceTap?.call('sms'),
               ),
               BadgeWidget(
