@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:me_myself_ai/pages/privacy_policy.dart';
+import 'package:me_myself_ai/pages/terms_of_service.dart';
 
 import 'api_integrations.dart';
 import 'configuration.dart';
@@ -258,8 +260,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 icon: Icons.description_outlined,
                 title: 'Terms of Service',
                 onTap: () {
-                  // Add navigation logic here
-                  print('Terms of Service tapped');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => TermsOfServicePage()),
+                  );
                 },
               ),
 
@@ -267,8 +269,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 icon: Icons.shield_outlined,
                 title: 'Privacy Policy',
                 onTap: () {
-                  // Add navigation logic here
-                  print('Privacy Policy tapped');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PrivacyPolicyPage()),
+                  );
                 },
               ),
 

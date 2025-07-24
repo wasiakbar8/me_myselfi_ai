@@ -444,7 +444,7 @@ class _BudgetNewEntryScreenState extends State<BudgetNewEntryScreen> {
                         border: Border.all(color: Colors.grey[300]!),
                       ),
                       child: Text(
-                        '\${amount}',
+                        '\$${amount}',
                         style: TextStyle(
                           color: Colors.black87,
                           fontWeight: FontWeight.w500,

@@ -17,18 +17,18 @@ class _UpgradePremiumPageState extends State<UpgradePremiumPage> {
     final isSmallScreen = screenWidth < 400;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFED29).withOpacity(0.2),
+      backgroundColor: Color(0xFFFAFAFA),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Upgrade Premium',
           style: TextStyle(
-            color: Colors.black87,
+            color: Colors.black,
             fontWeight: FontWeight.w600,
             fontSize: isSmallScreen ? 18 : 20,
           ),
@@ -283,7 +283,7 @@ class TrialPlanCard extends StatelessWidget {
           // Button
           SizedBox(
             width: double.infinity,
-            height: isSmallScreen ? 44 : 48,
+            height: 48,
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
@@ -320,12 +320,14 @@ class BusinessPlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+
       children: [
         Padding(
           padding: EdgeInsets.all(isSmallScreen ? 20 : 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
+
             children: [
               // Header with spacing for badge
               Padding(
@@ -422,7 +424,7 @@ class BusinessPlanCard extends StatelessWidget {
               // Button
               Container(
                 width: double.infinity,
-                height: isSmallScreen ? 44 : 48,
+                height: 48,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   color: Color(0xFFFFD60A),

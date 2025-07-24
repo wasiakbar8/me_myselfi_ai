@@ -4,6 +4,7 @@ import 'package:me_myself_ai/pages/api_integrations.dart';
 
 import '../../../../pages/upgrade_premium.dart';
 import '../../../budget/views/budget_tracking_screen.dart';
+import '../../../calendar/views/calendar_screen.dart';
 import '../../../vault/views/vault_password_screen.dart';
 
 class AnimatedQuickToolsWidget extends StatefulWidget {
@@ -69,7 +70,7 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const DiaryScreen()),
+              MaterialPageRoute(builder: (context) => const CalendarScreen()),
             );
           },
         ),
