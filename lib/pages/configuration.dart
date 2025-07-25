@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../features/calendar/models/calendar_model.dart';
+import 'calendar_configuration.dart';
+
 class Configuration extends StatefulWidget {
   const Configuration({Key? key}) : super(key: key);
 
@@ -8,8 +11,6 @@ class Configuration extends StatefulWidget {
 }
 
 class _ConfigurationState extends State<Configuration> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,14 +40,26 @@ class _ConfigurationState extends State<Configuration> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-
               _buildSettingItem(
                 icon: Icons.calendar_month_outlined,
                 title: 'Calendar Configuration',
                 onTap: () {
-                  // Add navigation logic here
-                  print('Notifications tapped');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CalendarConfigurationScreen(
+                        initialCalendarState: CalendarState(
+                          selectedDate: DateTime.now(), // or any relevant date
+                          currentView:
+                              CalendarView.today, // or today, weekly, etc.
+                          events:
+                              [], // can be a list of CalendarEvent if you have any
+                          isLoading: false,
+                        ),
+                        onConfigurationChanged: (CalendarState) {},
+                      ),
+                    ),
+                  );
                 },
               ),
 
@@ -76,7 +89,6 @@ class _ConfigurationState extends State<Configuration> {
                   print('API Integration tapped');
                 },
               ),
-
             ],
           ),
         ),
@@ -94,20 +106,14 @@ class _ConfigurationState extends State<Configuration> {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         tileColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: Colors.grey[100],
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
-            icon,
-            color: Colors.grey[700],
-            size: 20,
-          ),
+          child: Icon(icon, color: Colors.grey[700], size: 20),
         ),
         title: Text(
           title,

@@ -1,8 +1,6 @@
-// lib/features/unified_inbox/views/unified_inbox_screen.dart
 import 'package:flutter/material.dart';
 import 'package:me_myself_ai/features/unified_inbox/views/unified_newmsg_screen.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
-
 import '../../dashboard/presentation/widgets/chat_bot.dart' as chat_bot;
 import '../../dashboard/presentation/widgets/hamburger.dart';
 import '../models/unified_inbox_model.dart';
@@ -10,7 +8,9 @@ import '../utils/unified_source_helper.dart';
 import 'unified_chat_screen.dart';
 
 class UnifiedInboxScreen extends StatefulWidget {
-  const UnifiedInboxScreen({Key? key}) : super(key: key);
+  final MessageSource? initialSource; // Add parameter to receive initial filter
+
+  const UnifiedInboxScreen({Key? key, this.initialSource}) : super(key: key);
 
   @override
   State<UnifiedInboxScreen> createState() => _UnifiedInboxScreenState();
@@ -128,7 +128,9 @@ class _UnifiedInboxScreenState extends State<UnifiedInboxScreen> {
   @override
   void initState() {
     super.initState();
+    _selectedSource = widget.initialSource; // Set initial source from arguments
     _filteredMessages = _allMessages;
+    _filterMessages(); // Apply initial filter
   }
 
   void _filterMessages() {
@@ -289,173 +291,163 @@ class _UnifiedInboxScreenState extends State<UnifiedInboxScreen> {
           );
         },
       ),
-      drawer: HamburgerDrawer(onItemSelected: (index) {}),
+      drawer: HamburgerDrawer(),
       body: Stack(
-        children: [ Column(
-          children: [
-            // Search Bar
-            Container(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  // Search Bar
-                  Expanded(
-                    child: Container(
-                      height: 44,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(22),
-                      ),
-                      child: Center(
-                        child: TextField(
-                          controller: _searchController,
-                          onChanged: (_) => _filterMessages(),
-                          decoration: const InputDecoration(
-                            isDense: true,
-                            hintText: 'Search messages...',
-                            hintStyle: TextStyle(color: Colors.grey),
-                            prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20),
-                            prefixIconConstraints: BoxConstraints(minWidth: 24, minHeight: 24),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(vertical: 0),
+        children: [
+          Column(
+            children: [
+              // Search Bar
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    // Search Bar
+                    Expanded(
+                      child: Container(
+                        height: 44,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(22),
+                        ),
+                        child: Center(
+                          child: TextField(
+                            controller: _searchController,
+                            onChanged: (_) => _filterMessages(),
+                            decoration: const InputDecoration(
+                              isDense: true,
+                              hintText: 'Search messages...',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20),
+                              prefixIconConstraints: BoxConstraints(minWidth: 24, minHeight: 24),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(vertical: 0),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  // New Msg Button
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => UnifiedNewMsgScreen()),
-                      );
-                    },
-                    child: Container(
-                      height: 44,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFD700),
-                        borderRadius: BorderRadius.circular(22),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.add, color: Colors.black87, size: 20),
-                          SizedBox(width: 6),
-                          Text(
-                            'New Msg',
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
+                    const SizedBox(width: 10),
+                    // New Msg Button
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => UnifiedNewMsgScreen()),
+                        );
+                      },
+                      child: Container(
+                        height: 44,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFD700),
+                          borderRadius: BorderRadius.circular(22),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.add, color: Colors.black87, size: 20),
+                            SizedBox(width: 6),
+                            Text(
+                              'New Msg',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-
-
-            // Message Sources
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Message Sources',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: MessageSource.values
-                          .map((source) => _buildSourceFilter(source))
-                          .toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // Messages Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Messages',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  Icon(
-                    Icons.filter_list,
-                    color: Colors.grey[600],
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // Messages List
-            Expanded(
-              child: _filteredMessages.isEmpty
-                  ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.inbox,
-                      size: 64,
-                      color: Colors.grey[400],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'No messages found',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
-              )
-                  : ListView.builder(
-                key: const ValueKey('messages_list'),
-                itemCount: _filteredMessages.length,
-                itemBuilder: (context, index) {
-                  return _buildMessageTile(_filteredMessages[index]);
-                },
               ),
-            ),
-          ],
-        ),
-
+              // Message Sources
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Message Sources',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: MessageSource.values
+                            .map((source) => _buildSourceFilter(source))
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Messages Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Messages',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    Icon(
+                      Icons.filter_list,
+                      color: Colors.grey[600],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              // Messages List
+              Expanded(
+                child: _filteredMessages.isEmpty
+                    ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.inbox,
+                        size: 64,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No messages found',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                    : ListView.builder(
+                  key: const ValueKey('messages_list'),
+                  itemCount: _filteredMessages.length,
+                  itemBuilder: (context, index) {
+                    return _buildMessageTile(_filteredMessages[index]);
+                  },
+                ),
+              ),
+            ],
+          ),
           const chat_bot.ChatBotWidget(),
         ],
       ),
-
     );
   }
 

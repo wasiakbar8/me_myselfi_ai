@@ -50,7 +50,7 @@ class VoiceAgentWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          'Voice Agent',
+          'AI Call Agent',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -109,7 +109,7 @@ class VoiceAgentWidget extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
-                  Icons.mic,
+                  Icons.call,
                   color: Colors.white,
                   size: 32,
                 ),

@@ -1,9 +1,9 @@
-// lib/features/calendar/views/calendar_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../dashboard/presentation/widgets/hamburger.dart';
 import '../models/calendar_model.dart';
 import 'calendar_newentry_screen.dart';
+import 'calendar_entry_view_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({Key? key}) : super(key: key);
@@ -15,12 +15,13 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   CalendarState _calendarState = CalendarState(
     selectedDate: DateTime.now(),
-    currentView: CalendarView.monthly,
+    currentView: CalendarView.today,
     events: _getSampleEvents(),
   );
 
   PageController _pageController = PageController(initialPage: 1200);
   int _currentPageIndex = 1200;
+  CalendarEvent? _tappedEvent;
 
   static List<CalendarEvent> _getSampleEvents() {
     final now = DateTime.now();
@@ -95,41 +96,49 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black),
-          onPressed: () {},
-        ),
-        title: const Text(
-          'Calendar',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
+      drawer: HamburgerDrawer(),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+
+            backgroundColor: Colors.white,
+            elevation: 0,
+            pinned: true,
+            floating: true,
+            snap: true,
+            expandedHeight: 0,
+
+            title: const Text(
+              'Calendar',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: const Icon(
+                  Icons.notifications_outlined,
+                  color: Colors.black,
+                ),
+                onPressed: () {},
+              ),
+            ],
           ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: Colors.black),
-            onPressed: () {},
+          SliverToBoxAdapter(
+            child: Column(
+              children: [_buildViewSelector(), _buildCalendarHeader()],
+            ),
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          _buildViewSelector(),
-          _buildCalendarHeader(),
-          Expanded(
-            child: _buildCalendarContent(),
-          ),
+          SliverFillRemaining(child: _buildCalendarContent()),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToNewEntry,
-        backgroundColor: Colors.yellow.shade400,
+        backgroundColor: Color(0xFFFFD60A),
         child: const Icon(Icons.add, color: Colors.black),
       ),
     );
@@ -191,13 +200,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
     String headerText;
     switch (_calendarState.currentView) {
       case CalendarView.today:
-        headerText = DateFormat('EEEE, MMMM dd, yyyy').format(_calendarState.selectedDate);
+        headerText = DateFormat(
+          'EEEE, MMMM dd, yyyy',
+        ).format(_calendarState.selectedDate);
         break;
       case CalendarView.weekly:
         headerText = 'Weekly Calendar';
         break;
       case CalendarView.monthly:
-        headerText = DateFormat('MMMM yyyy').format(_calendarState.selectedDate);
+        headerText = DateFormat(
+          'MMMM yyyy',
+        ).format(_calendarState.selectedDate);
         break;
       case CalendarView.yearly:
         headerText = DateFormat('yyyy').format(_calendarState.selectedDate);
@@ -215,10 +228,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ),
           Text(
             headerText,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           IconButton(
             onPressed: _nextPeriod,
@@ -243,84 +253,204 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildTodayView() {
-    final todayEvents = _calendarState.getEventsForDate(_calendarState.selectedDate);
+    final todayEvents = _calendarState.getEventsForDate(
+      _calendarState.selectedDate,
+    );
+    final firstDayOfMonth = DateTime(
+      _calendarState.selectedDate.year,
+      _calendarState.selectedDate.month,
+      1,
+    );
+    final lastDayOfMonth = DateTime(
+      _calendarState.selectedDate.year,
+      _calendarState.selectedDate.month + 1,
+      0,
+    );
+    final startDate = firstDayOfMonth.subtract(
+      Duration(days: firstDayOfMonth.weekday % 7),
+    );
 
-    return Column(
-      children: [
-        // Today's date display
-        Container(
-          margin: const EdgeInsets.all(16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.yellow.shade400,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        DateFormat('MMM').format(_calendarState.selectedDate),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        DateFormat('dd').format(_calendarState.selectedDate),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        DateFormat('EEEE').format(_calendarState.selectedDate),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        '${todayEvents.length} events',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.yellow.shade400,
-                  borderRadius: BorderRadius.circular(12),
+          Container(
+            height: 280,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      DateFormat('MMM').format(_calendarState.selectedDate),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      DateFormat('dd').format(_calendarState.selectedDate),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+              ],
+            ),
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(8),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 7,
+                childAspectRatio: 1,
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      DateFormat('EEEE').format(_calendarState.selectedDate),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
+              itemCount: 42,
+              itemBuilder: (context, index) {
+                final date = startDate.add(Duration(days: index));
+                final isCurrentMonth =
+                    date.month == _calendarState.selectedDate.month;
+                final isToday = _isToday(date);
+                final isSelected = _isSameDay(
+                  date,
+                  _calendarState.selectedDate,
+                );
+                final dayEvents = _calendarState.getEventsForDate(date);
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _calendarState = _calendarState.copyWith(
+                        selectedDate: date,
+                      );
+                      _tappedEvent = dayEvents.isNotEmpty ? dayEvents[0] : null;
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? Colors.yellow.shade400
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    Text(
-                      '${todayEvents.length} events',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: isToday ? Colors.red : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Center(
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: isToday
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: !isCurrentMonth
+                                    ? Colors.grey.shade400
+                                    : isToday
+                                    ? Colors.white
+                                    : Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (dayEvents.isNotEmpty)
+                          Container(
+                            margin: const EdgeInsets.only(top: 2),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: dayEvents.take(3).map((event) {
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 1,
+                                  ),
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: event.color,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ],
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        // Today's events
-        Expanded(
-          child: _buildEventsList(todayEvents, "Today's Events"),
-        ),
-      ],
+          const SizedBox(height: 10),
+          _buildEventsList(todayEvents, "Today's Events"),
+          const SizedBox(height: 100), // Extra space for floating action button
+        ],
+      ),
     );
   }
 
@@ -329,41 +459,42 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final weekEnd = weekStart.add(const Duration(days: 6));
     final weekEvents = _calendarState.getEventsForWeek(weekStart);
 
-    return Column(
-      children: [
-        // Week period display
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            'Week of ${DateFormat('MMM dd').format(weekStart)} – ${DateFormat('MMM dd, yyyy').format(weekEnd)}',
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              'Week of ${DateFormat('MMM dd').format(weekStart)} – ${DateFormat('MMM dd, yyyy').format(weekEnd)}',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
             ),
           ),
-        ),
-        _buildWeekHeader(),
-        Container(
-          height: 300,
-          margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
+          _buildWeekHeader(),
+          Container(
+            height: 300,
+            margin: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: _buildWeeklyTimeGrid(),
           ),
-          child: _buildWeeklyTimeGrid(),
-        ),
-        Expanded(
-          child: _buildEventsList(weekEvents, "Weekly Events"),
-        ),
-      ],
+          _buildEventsList(weekEvents, "Weekly Events"),
+          const SizedBox(height: 100), // Extra space for floating action button
+        ],
+      ),
     );
   }
 
@@ -396,7 +527,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: isToday ? Colors.yellow.shade400 : Colors.transparent,
+                      color: isToday
+                          ? Colors.yellow.shade400
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Center(
@@ -404,7 +537,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         date.day.toString(),
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                          fontWeight: isToday
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                           color: isToday ? Colors.black : Colors.black87,
                         ),
                       ),
@@ -424,14 +559,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final hours = List.generate(24, (index) => index);
 
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Column(
         children: [
-          // Time grid header with days
           Container(
             height: 40,
             child: Row(
               children: [
-                SizedBox(width: 60), // Time column width
+                SizedBox(width: 60),
                 ...List.generate(7, (dayIndex) {
                   final date = weekStart.add(Duration(days: dayIndex));
                   return Expanded(
@@ -450,13 +585,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
               ],
             ),
           ),
-          // Time slots
           ...hours.map((hour) {
             return Container(
               height: 50,
               child: Row(
                 children: [
-                  // Time label
                   SizedBox(
                     width: 60,
                     child: Text(
@@ -468,10 +601,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  // Day columns
                   ...List.generate(7, (dayIndex) {
                     final date = weekStart.add(Duration(days: dayIndex));
-                    final dayEvents = _calendarState.getEventsForDate(date)
+                    final dayEvents = _calendarState
+                        .getEventsForDate(date)
                         .where((event) => event.startTime.hour == hour)
                         .toList();
 
@@ -479,27 +612,33 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border(
-                            right: BorderSide(color: Colors.grey.shade200, width: 0.5),
-                            bottom: BorderSide(color: Colors.grey.shade200, width: 0.5),
+                            right: BorderSide(
+                              color: Colors.grey.shade200,
+                              width: 0.5,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey.shade200,
+                              width: 0.5,
+                            ),
                           ),
                         ),
                         child: dayEvents.isNotEmpty
                             ? Container(
-                          margin: const EdgeInsets.all(1),
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            color: dayEvents.first.color,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            dayEvents.first.title,
-                            style: const TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )
+                                margin: const EdgeInsets.all(1),
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: dayEvents.first.color,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  dayEvents.first.title,
+                                  style: const TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
                             : null,
                       ),
                     );
@@ -514,23 +653,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildMonthlyView() {
-    return Column(
-      children: [
-        _buildMonthHeader(),
-        Expanded(
-          child: _buildMonthGrid(),
-        ),
-        Container(
-          height: 200,
-          child: _buildEventsList(
-            _calendarState.getEventsForMonth(
-              _calendarState.selectedDate.year,
-              _calendarState.selectedDate.month,
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          _buildMonthHeader(),
+          _buildMonthGrid(),
+          const SizedBox(height: 16),
+          Container(
+            constraints: BoxConstraints(minHeight: 200),
+            child: _buildEventsList(
+              _calendarState.getEventsForMonth(
+                _calendarState.selectedDate.year,
+                _calendarState.selectedDate.month,
+              ),
+              "${DateFormat('MMMM').format(_calendarState.selectedDate)} Events",
             ),
-            "${DateFormat('MMMM').format(_calendarState.selectedDate)} Events",
           ),
-        ),
-      ],
+          const SizedBox(height: 100), // Extra space for floating action button
+        ],
+      ),
     );
   }
 
@@ -559,9 +701,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildMonthGrid() {
-    final firstDayOfMonth = DateTime(_calendarState.selectedDate.year, _calendarState.selectedDate.month, 1);
-    final lastDayOfMonth = DateTime(_calendarState.selectedDate.year, _calendarState.selectedDate.month + 1, 0);
-    final startDate = firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday % 7));
+    final firstDayOfMonth = DateTime(
+      _calendarState.selectedDate.year,
+      _calendarState.selectedDate.month,
+      1,
+    );
+    final lastDayOfMonth = DateTime(
+      _calendarState.selectedDate.year,
+      _calendarState.selectedDate.month + 1,
+      0,
+    );
+    final startDate = firstDayOfMonth.subtract(
+      Duration(days: firstDayOfMonth.weekday % 7),
+    );
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -587,7 +739,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
         itemCount: 42,
         itemBuilder: (context, index) {
           final date = startDate.add(Duration(days: index));
-          final isCurrentMonth = date.month == _calendarState.selectedDate.month;
+          final isCurrentMonth =
+              date.month == _calendarState.selectedDate.month;
           final isToday = _isToday(date);
           final isSelected = _isSameDay(date, _calendarState.selectedDate);
           final dayEvents = _calendarState.getEventsForDate(date);
@@ -619,7 +772,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         date.day.toString(),
                         style: TextStyle(
                           fontSize: 12,
-                          fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                          fontWeight: isToday
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                           color: !isCurrentMonth
                               ? Colors.grey.shade400
                               : isToday
@@ -657,45 +812,54 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildYearlyView() {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    _calendarState = _calendarState.copyWith(
-                      selectedDate: DateTime(_calendarState.selectedDate.year - 1, _calendarState.selectedDate.month),
-                    );
-                  });
-                },
-                icon: const Icon(Icons.chevron_left),
-              ),
-              Text(
-                _calendarState.selectedDate.year.toString(),
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _calendarState = _calendarState.copyWith(
+                        selectedDate: DateTime(
+                          _calendarState.selectedDate.year - 1,
+                          _calendarState.selectedDate.month,
+                        ),
+                      );
+                    });
+                  },
+                  icon: const Icon(Icons.chevron_left),
                 ),
-              ),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    _calendarState = _calendarState.copyWith(
-                      selectedDate: DateTime(_calendarState.selectedDate.year + 1, _calendarState.selectedDate.month),
-                    );
-                  });
-                },
-                icon: const Icon(Icons.chevron_right),
-              ),
-            ],
+                Text(
+                  _calendarState.selectedDate.year.toString(),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _calendarState = _calendarState.copyWith(
+                        selectedDate: DateTime(
+                          _calendarState.selectedDate.year + 1,
+                          _calendarState.selectedDate.month,
+                        ),
+                      );
+                    });
+                  },
+                  icon: const Icon(Icons.chevron_right),
+                ),
+              ],
+            ),
           ),
-        ),
-        Expanded(
-          child: GridView.builder(
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.all(16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -706,8 +870,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
             itemCount: 12,
             itemBuilder: (context, index) {
               final month = index + 1;
-              final monthDate = DateTime(_calendarState.selectedDate.year, month);
-              final monthEvents = _calendarState.getEventsForMonth(_calendarState.selectedDate.year, month);
+              final monthDate = DateTime(
+                _calendarState.selectedDate.year,
+                month,
+              );
+              final monthEvents = _calendarState.getEventsForMonth(
+                _calendarState.selectedDate.year,
+                month,
+              );
 
               return GestureDetector(
                 onTap: () {
@@ -742,9 +912,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: _buildMiniMonthGrid(monthDate),
-                      ),
+                      Expanded(child: _buildMiniMonthGrid(monthDate)),
                       Container(
                         padding: const EdgeInsets.all(8),
                         child: Text(
@@ -761,14 +929,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
               );
             },
           ),
-        ),
-      ],
+          const SizedBox(height: 100), // Extra space for floating action button
+        ],
+      ),
     );
   }
 
   Widget _buildMiniMonthGrid(DateTime monthDate) {
     final firstDayOfMonth = DateTime(monthDate.year, monthDate.month, 1);
-    final startDate = firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday % 7));
+    final startDate = firstDayOfMonth.subtract(
+      Duration(days: firstDayOfMonth.weekday % 7),
+    );
 
     return GridView.builder(
       shrinkWrap: true,
@@ -793,7 +964,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 date.day.toString(),
                 style: TextStyle(
                   fontSize: 8,
-                  color: !isCurrentMonth ? Colors.grey.shade400 : Colors.black87,
+                  color: !isCurrentMonth
+                      ? Colors.grey.shade400
+                      : Colors.black87,
                 ),
               ),
               if (dayEvents.isNotEmpty)
@@ -821,22 +994,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Text(
               'No events scheduled',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
           ],
         ),
       );
+    }
+
+    List<CalendarEvent> prioritizedEvents = List.from(events);
+    if (_tappedEvent != null && prioritizedEvents.contains(_tappedEvent)) {
+      prioritizedEvents.remove(_tappedEvent);
+      prioritizedEvents.insert(0, _tappedEvent!);
     }
 
     return Container(
@@ -846,20 +1019,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 12),
-          Expanded(
-            child: ListView.builder(
-              itemCount: events.length,
-              itemBuilder: (context, index) {
-                final event = events[index];
-                return _buildEventCard(event);
-              },
-            ),
+          const SizedBox(height: 0),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: prioritizedEvents.length,
+            itemBuilder: (context, index) {
+              final event = prioritizedEvents[index];
+              return GestureDetector(
+                onTap: () {
+                  _showEventDetails(event);
+                },
+                child: _buildEventCard(event),
+              );
+            },
           ),
         ],
       ),
@@ -924,12 +1099,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
                           if (result != null && result is CalendarEvent) {
                             setState(() {
-                              final updatedEvents = List<CalendarEvent>.from(_calendarState.events);
-                              final index = updatedEvents.indexWhere((e) => e.id == event.id);
+                              final updatedEvents = List<CalendarEvent>.from(
+                                _calendarState.events,
+                              );
+                              final index = updatedEvents.indexWhere(
+                                (e) => e.id == event.id,
+                              );
                               if (index != -1) {
                                 updatedEvents[index] = result;
                               }
-                              _calendarState = _calendarState.copyWith(events: updatedEvents);
+                              _calendarState = _calendarState.copyWith(
+                                events: updatedEvents,
+                              );
                             });
                           }
                         } else if (value == 'delete') {
@@ -953,7 +1134,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             children: [
                               Icon(Icons.delete, size: 16, color: Colors.red),
                               SizedBox(width: 8),
-                              Text('Delete', style: TextStyle(color: Colors.red)),
+                              Text(
+                                'Delete',
+                                style: TextStyle(color: Colors.red),
+                              ),
                             ],
                           ),
                         ),
@@ -965,7 +1149,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.access_time, size: 14, color: Colors.grey.shade600),
+                    Icon(
+                      Icons.access_time,
+                      size: 14,
+                      color: Colors.grey.shade600,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       event.isAllDay
@@ -982,7 +1170,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(Icons.people_outline, size: 14, color: Colors.grey.shade600),
+                      Icon(
+                        Icons.people_outline,
+                        size: 14,
+                        color: Colors.grey.shade600,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         '${event.attendees.length} attendees',
@@ -999,7 +1191,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   Row(
                     children: [
                       Icon(
-                        event.location.toLowerCase().contains('phone') ? Icons.phone : Icons.location_on_outlined,
+                        event.location.toLowerCase().contains('phone')
+                            ? Icons.phone
+                            : Icons.location_on_outlined,
                         size: 14,
                         color: Colors.grey.shade600,
                       ),
@@ -1062,11 +1256,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   bool _isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   void _previousPeriod() {
@@ -1074,16 +1272,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
       DateTime newDate;
       switch (_calendarState.currentView) {
         case CalendarView.today:
-          newDate = _calendarState.selectedDate.subtract(const Duration(days: 1));
+          newDate = _calendarState.selectedDate.subtract(
+            const Duration(days: 1),
+          );
           break;
         case CalendarView.weekly:
-          newDate = _calendarState.selectedDate.subtract(const Duration(days: 7));
+          newDate = _calendarState.selectedDate.subtract(
+            const Duration(days: 7),
+          );
           break;
         case CalendarView.monthly:
-          newDate = DateTime(_calendarState.selectedDate.year, _calendarState.selectedDate.month - 1);
+          newDate = DateTime(
+            _calendarState.selectedDate.year,
+            _calendarState.selectedDate.month - 1,
+          );
           break;
         case CalendarView.yearly:
-          newDate = DateTime(_calendarState.selectedDate.year - 1, _calendarState.selectedDate.month);
+          newDate = DateTime(
+            _calendarState.selectedDate.year - 1,
+            _calendarState.selectedDate.month,
+          );
           break;
       }
       _calendarState = _calendarState.copyWith(selectedDate: newDate);
@@ -1101,10 +1309,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
           newDate = _calendarState.selectedDate.add(const Duration(days: 7));
           break;
         case CalendarView.monthly:
-          newDate = DateTime(_calendarState.selectedDate.year, _calendarState.selectedDate.month + 1);
+          newDate = DateTime(
+            _calendarState.selectedDate.year,
+            _calendarState.selectedDate.month + 1,
+          );
           break;
         case CalendarView.yearly:
-          newDate = DateTime(_calendarState.selectedDate.year + 1, _calendarState.selectedDate.month);
+          newDate = DateTime(
+            _calendarState.selectedDate.year + 1,
+            _calendarState.selectedDate.month,
+          );
           break;
       }
       _calendarState = _calendarState.copyWith(selectedDate: newDate);
@@ -1115,9 +1329,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CalendarNewEntryScreen(
-          selectedDate: _calendarState.selectedDate,
-        ),
+        builder: (context) =>
+            CalendarNewEntryScreen(selectedDate: _calendarState.selectedDate),
       ),
     );
 
@@ -1144,7 +1357,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
           TextButton(
             onPressed: () {
               setState(() {
-                final updatedEvents = List<CalendarEvent>.from(_calendarState.events);
+                final updatedEvents = List<CalendarEvent>.from(
+                  _calendarState.events,
+                );
                 updatedEvents.removeWhere((e) => e.id == event.id);
                 _calendarState = _calendarState.copyWith(events: updatedEvents);
               });
@@ -1155,5 +1370,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ],
       ),
     );
+  }
+
+  void _showEventDetails(CalendarEvent event) {
+    showDialog(
+      context: context,
+      builder: (context) => CalendarEntryViewScreen(event: event),
+    ).then((_) {
+      setState(() {
+        _tappedEvent = event;
+      });
+    });
   }
 }

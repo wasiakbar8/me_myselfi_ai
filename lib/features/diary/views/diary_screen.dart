@@ -456,7 +456,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
           );
         },
       ),
-      drawer: HamburgerDrawer(onItemSelected: (index) {}),
+      drawer: HamburgerDrawer(),
       body: Stack(
         children: [ Column(
           children: [

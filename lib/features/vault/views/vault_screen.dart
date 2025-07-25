@@ -480,7 +480,7 @@ class _VaultScreenState extends State<VaultScreen> {
         },
 
       ),
-      drawer: HamburgerDrawer(onItemSelected: (index) {}),
+      drawer: HamburgerDrawer(),
       body: Stack(
         children: [
           Column(

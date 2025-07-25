@@ -233,7 +233,7 @@ class _VaultViewScreenState extends State<VaultViewScreen> {
 
 
       ),
-      drawer: HamburgerDrawer(onItemSelected: (index) {}),
+      drawer: HamburgerDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

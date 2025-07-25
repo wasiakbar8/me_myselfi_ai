@@ -1,4 +1,3 @@
-// lib/features/dashboard/presentation/widgets/unified_inbox_section.dart
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../shared/widgets/custom_card.dart';
@@ -7,18 +6,18 @@ import '../../../../shared/widgets/primary_button.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../unified_inbox/models/unified_inbox_model.dart';
 import '../../domain/models/message_stats.dart';
+// import '../utils/unified_source_helper.dart'; // Import to use MessageSource enum
 
 class UnifiedInboxSection extends StatelessWidget {
   final MessageStats messageStats;
   final VoidCallback? onGoToInbox;
-  final Function(String)? onServiceTap;
 
   const UnifiedInboxSection({
     super.key,
     required this.messageStats,
     this.onGoToInbox,
-    this.onServiceTap,
   });
 
   @override
@@ -48,38 +47,60 @@ class UnifiedInboxSection extends StatelessWidget {
                 label: 'WhatsApp',
                 count: messageStats.whatsAppCount,
                 backgroundColor: AppColors.whatsAppGreen,
-                icon:  FontAwesomeIcons.whatsapp,
-                onTap: () => onServiceTap?.call('whatsapp'),
+                icon: FontAwesomeIcons.whatsapp,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/unified_inbox_screen',
+                    arguments: MessageSource.whatsapp, // Pass WhatsApp filter
+                  );
+                },
               ),
               BadgeWidget(
                 label: 'Email',
                 count: messageStats.emailCount,
                 backgroundColor: AppColors.emailPurple,
                 icon: Icons.email,
-                onTap: () => onServiceTap?.call('email'),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/unified_inbox_screen',
+                    arguments: MessageSource.email, // Pass Email filter
+                  );
+                },
               ),
               BadgeWidget(
                 label: 'SMS',
                 count: messageStats.smsCount,
                 backgroundColor: AppColors.smsTeal,
                 icon: FontAwesomeIcons.sms,
-                onTap: () => onServiceTap?.call('sms'),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/unified_inbox_screen',
+                    arguments: MessageSource.sms, // Pass SMS filter
+                  );
+                },
               ),
               BadgeWidget(
                 label: 'Slack',
                 count: messageStats.slackCount,
                 backgroundColor: AppColors.slackBlue,
                 icon: Icons.chat_bubble,
-                onTap: () => onServiceTap?.call('slack'),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/unified_inbox_screen',
+                    arguments: MessageSource.slack, // Pass Slack filter
+                  );
+                },
               ),
             ],
           ),
           const SizedBox(height: AppConstants.containerPadding),
           PrimaryButton(
             text: 'Go to Inbox',
-            onPressed: (
-
-                ) {
+            onPressed: () {
               Navigator.pushNamed(context, '/unified_inbox_screen');
             },
             icon: Icons.arrow_forward,

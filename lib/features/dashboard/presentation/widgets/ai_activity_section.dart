@@ -5,6 +5,7 @@ import '../../../../shared/widgets/primary_button.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../ai_assistant/views/ai_assistant_screen.dart';
 import '../../domain/models/ai_activity.dart';
 
 class AIActivitySection extends StatelessWidget {
@@ -34,7 +35,10 @@ class AIActivitySection extends StatelessWidget {
           const SizedBox(height: AppConstants.containerPadding),
           PrimaryButton(
             text: 'View All Activity',
-            onPressed: onViewAllActivity,
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> AIAssistantScreen()));
+
+            },
           ),
         ],
       ),

@@ -1,31 +1,22 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 
-
 class Hamburger extends StatelessWidget {
-  final Function(int) onItemSelected;
-
-  const Hamburger({super.key, required this.onItemSelected});
+  const Hamburger({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) => IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () {
-          Scaffold.of(context).openDrawer();
-        },
-      ),
+    return IconButton(
+      icon: const Icon(Icons.menu),
+      onPressed: () {
+        Scaffold.of(context).openDrawer();
+      },
     );
   }
 }
 
 class HamburgerDrawer extends StatelessWidget {
-  final Function(int) onItemSelected;
-
-  const HamburgerDrawer({super.key, required this.onItemSelected});
-
-
+  const HamburgerDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,21 +25,21 @@ class HamburgerDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
-
               color: Colors.white,
             ),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
                   'assets/logos/logo1.png',
-                  height: 35,
+                  height: 30,
                   fit: BoxFit.contain,
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 10),
                 Image.asset(
                   'assets/logos/logo2.png',
-                  height: 35,
+                  height: 30,
                   fit: BoxFit.contain,
                 ),
               ],
@@ -58,9 +49,8 @@ class HamburgerDrawer extends StatelessWidget {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                // "main" section header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Text(
                     'Main',
                     style: TextStyle(
@@ -74,44 +64,40 @@ class HamburgerDrawer extends StatelessWidget {
                   context,
                   icon: Icons.dashboard,
                   title: 'Dashboard',
-                  index: 0,
+                  route: '/dashboard_screen',
                 ),
-
-
-
                 _buildDrawerItem(
                   context,
                   icon: Icons.inbox,
                   title: 'Unified Inbox',
-                  index: 4,
+                  route: '/unified_inbox_screen',
                 ),
                 _buildDrawerItem(
                   context,
                   icon: Icons.assistant,
                   title: 'AI Assistant',
-                  index: 5,
+                  route: '/ai_assistant_screen',
                 ),
                 _buildDrawerItem(
                   context,
                   icon: Icons.mic,
                   title: 'AI Voice Agent',
-                  index: 6,
+                  route: '/ai_voice',
                 ),
                 _buildDrawerItem(
                   context,
                   icon: Icons.calendar_today,
                   title: 'AI Smart Calendar',
-                  index: 7,
+                  route: '/calendar_screen',
                 ),
                 _buildDrawerItem(
                   context,
                   icon: Icons.wallet,
                   title: 'Vault',
-                  index: 3,
+                  route: '/vault_password_screen',
                 ),
-                // "settings" section header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Text(
                     'Settings',
                     style: TextStyle(
@@ -125,40 +111,49 @@ class HamburgerDrawer extends StatelessWidget {
                   context,
                   icon: Icons.person,
                   title: 'Profile',
-                  index: 8,
+                  route: '/profile',
                 ),
                 _buildDrawerItem(
                   context,
                   icon: Icons.settings,
                   title: 'Settings',
-                  index: 9,
+                  route: '/settings',
                 ),
               ],
             ),
           ),
           const Divider(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  backgroundImage: NetworkImage('https://via.placeholder.com/40'),
-                ),
-                const SizedBox(width: 12.0),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Admin', style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('admin@memyself.ai', style: TextStyle(fontSize: 12)),
-                    ],
+          InkWell(
+            onTap: () {
+              Navigator.pop(context); // Close drawer
+              Navigator.pushNamed(context, '/profile_info');
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    backgroundImage: NetworkImage('https://via.placeholder.com/40'),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.more_vert),
-                  onPressed: () {},
-                ),
-              ],
+                  const SizedBox(width: 12.0),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Admin', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('admin@memyself.ai', style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      Navigator.pop(context); // Close drawer
+                      Navigator.pushNamed(context, '/profile_info');
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -166,16 +161,29 @@ class HamburgerDrawer extends StatelessWidget {
     );
   }
 
-// Placeholder for _buildDrawerItem (assuming it exists in your code)
-  Widget _buildDrawerItem(BuildContext context, {required IconData icon, required String title, required int index}) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
+  Widget _buildDrawerItem(
+      BuildContext context, {
+        required IconData icon,
+        required String title,
+        required String route,
+      }) {
+    return InkWell(
       onTap: () {
-        // Handle navigation or action based on index
         Navigator.pop(context); // Close drawer
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          route,
+              (route) => route.settings.name == '/dashboard_screen',
+        );
       },
+      highlightColor: const Color(0x80FFED29),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.black),
+        title: Text(
+          title,
+          style: const TextStyle(fontSize: 16),
+        ),
+      ),
     );
   }
-
 }

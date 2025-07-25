@@ -91,7 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           );
         },
       ),
-      drawer: HamburgerDrawer(onItemSelected: (index) {}),
+      drawer: new HamburgerDrawer(),
       body: Stack(
         children: [
           Column(
@@ -136,14 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: UnifiedInboxSection(
                           messageStats: _messageStats,
                           onGoToInbox: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Go to Inbox pressed')),
-                            );
-                          },
-                          onServiceTap: (service) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('$service service tapped')),
-                            );
+                            Navigator.pushNamed(context, '/unified_inbox_screen');
                           },
                         ),
                       ),

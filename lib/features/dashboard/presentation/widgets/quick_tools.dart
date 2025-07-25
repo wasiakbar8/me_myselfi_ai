@@ -70,7 +70,7 @@ class _AnimatedQuickToolsWidgetState extends State<AnimatedQuickToolsWidget>
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const CalendarScreen()),
+              MaterialPageRoute(builder: (context) => const DiaryScreen()),
             );
           },
         ),

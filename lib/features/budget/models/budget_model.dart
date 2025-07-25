@@ -73,20 +73,83 @@ class BudgetEntry {
   }
 }
 
+enum BudgetPeriod {
+  weekly,
+  monthly,
+}
+
+class BudgetSettings {
+  final double weeklyBudget;
+  final double monthlyBudget;
+  final BudgetPeriod activePeriod;
+  final Map<BudgetCategory, double> categoryLimits;
+
+  BudgetSettings({
+    required this.weeklyBudget,
+    required this.monthlyBudget,
+    required this.activePeriod,
+    required this.categoryLimits,
+  });
+
+  double get currentBudget => activePeriod == BudgetPeriod.weekly ? weeklyBudget : monthlyBudget;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'weeklyBudget': weeklyBudget,
+      'monthlyBudget': monthlyBudget,
+      'activePeriod': activePeriod.toString(),
+      'categoryLimits': categoryLimits.map((key, value) => MapEntry(key.toString(), value)),
+    };
+  }
+
+  factory BudgetSettings.fromJson(Map<String, dynamic> json) {
+    return BudgetSettings(
+      weeklyBudget: json['weeklyBudget']?.toDouble() ?? 0.0,
+      monthlyBudget: json['monthlyBudget']?.toDouble() ?? 0.0,
+      activePeriod: BudgetPeriod.values.firstWhere(
+            (e) => e.toString() == json['activePeriod'],
+        orElse: () => BudgetPeriod.weekly,
+      ),
+      categoryLimits: (json['categoryLimits'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(
+          BudgetCategory.values.firstWhere((e) => e.toString() == key),
+          value.toDouble(),
+        ),
+      ) ?? {},
+    );
+  }
+
+  BudgetSettings copyWith({
+    double? weeklyBudget,
+    double? monthlyBudget,
+    BudgetPeriod? activePeriod,
+    Map<BudgetCategory, double>? categoryLimits,
+  }) {
+    return BudgetSettings(
+      weeklyBudget: weeklyBudget ?? this.weeklyBudget,
+      monthlyBudget: monthlyBudget ?? this.monthlyBudget,
+      activePeriod: activePeriod ?? this.activePeriod,
+      categoryLimits: categoryLimits ?? this.categoryLimits,
+    );
+  }
+}
+
 class BudgetSummary {
   final double totalBudget;
   final double totalSpent;
   final double remaining;
-  final DateTime weekStart;
-  final DateTime weekEnd;
+  final DateTime periodStart;
+  final DateTime periodEnd;
+  final BudgetPeriod period;
   final Map<BudgetCategory, double> categorySpending;
 
   BudgetSummary({
     required this.totalBudget,
     required this.totalSpent,
     required this.remaining,
-    required this.weekStart,
-    required this.weekEnd,
+    required this.periodStart,
+    required this.periodEnd,
+    required this.period,
     required this.categorySpending,
   });
 

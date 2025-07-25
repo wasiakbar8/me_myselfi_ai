@@ -19,9 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: Builder(
         builder: (context) => Hamburger(
-          onItemSelected: (index) {
-            // Placeholder for navigation, can be expanded later
-          },
+
         ),
       ),
       title: Text(title, style: AppTextStyles.headerTitle),

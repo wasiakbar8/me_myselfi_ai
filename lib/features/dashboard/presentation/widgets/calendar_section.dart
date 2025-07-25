@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:me_myself_ai/features/calendar/views/calendar_newentry_screen.dart';
 import '../../../../shared/widgets/custom_card.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../calendar/views/calendar_screen.dart';
 
 class CalendarSection extends StatefulWidget {
   final VoidCallback? onAddEvent;
@@ -110,13 +112,22 @@ class _CalendarSectionState extends State<CalendarSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Calendar',
-                style: AppTextStyles.sectionTitle,
+              TextButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> CalendarScreen()));
+                },
+                child: Text(
+                  'Calendar',
+                  style: AppTextStyles.sectionTitle,
+
+                )
+
               ),
               FloatingActionButton(
                 mini: true,
-                onPressed: widget.onAddEvent,
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> CalendarNewEntryScreen(selectedDate: _selectedDate)));
+                },
                 backgroundColor: AppColors.primary,
                 child: const Icon(
                   Icons.add,
