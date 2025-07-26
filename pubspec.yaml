@@ -38,6 +38,8 @@ dependencies:
   path_provider: ^2.1.2
   shared_preferences: ^2.2.2
   image_picker: ^1.0.0
+  flutter_dotenv: ^5.1.0
+  speech_to_text: ^6.3.0
     # If you're downloading files before opening:
   dio: ^5.4.0
 
@@ -79,6 +81,7 @@ flutter_launcher_icons:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - .env
     - assets/logos/
 
   # The following line ensures that the Material Icons font is

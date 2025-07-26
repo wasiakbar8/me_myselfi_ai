@@ -5,6 +5,7 @@ import '../../../../shared/widgets/custom_card.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../shared/widgets/primary_button.dart';
 import '../../../calendar/views/calendar_screen.dart';
 
 class CalendarSection extends StatefulWidget {
@@ -137,7 +138,7 @@ class _CalendarSectionState extends State<CalendarSection> {
             ],
           ),
 
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 6.0),
 
           // Month Title
           Center(
@@ -147,7 +148,7 @@ class _CalendarSectionState extends State<CalendarSection> {
             ),
           ),
 
-          const SizedBox(height: 6.0),
+          const SizedBox(height: 3.0),
 
           // Navigation and Weekday labels aligned in columns
           Row(
@@ -190,19 +191,27 @@ class _CalendarSectionState extends State<CalendarSection> {
             children: _buildCalendarDays(),
           ),
 
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 5),
 
           const Text('Events', style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 6.0),
+          const SizedBox(height: 2),
 
           const ListTile(
             leading: Icon(Icons.people, color: Colors.blue),
-            title: Text('Team Meeting 10:00 AM',style: TextStyle(fontSize: 14 )),
+            title: Text('Team Meeting 10:00 AM',style: TextStyle(fontSize: 12 )),
           ),
 
           const ListTile(
             leading: Icon(Icons.phone, color: Colors.blue),
-            title: Text('Client Call 2:30 PM', style: TextStyle(fontSize: 14 )),
+            title: Text('Client Call 2:30 PM', style: TextStyle(fontSize: 12 )),
+          ),
+
+          PrimaryButton(
+            text: 'View Calendar',
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> CalendarScreen()));
+
+            },
           ),
         ],
       ),

@@ -18,8 +18,12 @@ import 'features/unified_inbox/views/unified_inbox_screen.dart';
 import 'features/unified_inbox/views/unified_newmsg_screen.dart';
 import 'features/vault/views/vault_password_screen.dart';
 import 'features/vault/views/vault_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // ✅ Required before async code
+  await dotenv.load(fileName: ".env");       // ✅ Load your env file
+
   runApp(const MyApp());
 }
 
