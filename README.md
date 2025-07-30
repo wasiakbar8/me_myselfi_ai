@@ -41,7 +41,16 @@ MeMyselfI.ai follows a **microservices architecture**, where each service is imp
 
 ## 📸 Screenshots
 
-![App Screenshot](https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/IMG-20250728-WA0017.jpg)
+<div style="display: flex; overflow-x: auto; gap: 12px; padding: 10px 0;">
+  <img src="https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/screenshots/screen1.jpg" alt="Screenshot 1" width="250" />
+  <img src="https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/screenshots/screen2.jpg" alt="Screenshot 2" width="250" />
+  <img src="https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/screenshots/screen3.jpg" alt="Screenshot 3" width="250" />
+  <img src="https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/screenshots/screen4.jpg" alt="Screenshot 4" width="250" />
+  <img src="https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/screenshots/screen5.jpg" alt="Screenshot 5" width="250" />
+  <img src="https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/screenshots/screen6.jpg" alt="Screenshot 6" width="250" />
+  <img src="https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/screenshots/screen7.jpg" alt="Screenshot 7" width="250" />
+</div>
+
 
 ---
 
