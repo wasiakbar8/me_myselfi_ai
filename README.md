@@ -1,6 +1,7 @@
+
 # MeMyselfI.ai 🧠
 
-*MeMyselfI.ai* is a modular, AI-powered productivity and self-management platform built on a scalable microservices architecture using *Python, **Firebase, and **OpenAI* APIs. This project is designed to empower users through intelligent voice interactions, unified messaging, secure storage, calendar integration, budgeting tools, and more.
+**MeMyselfI.ai** is a modular, AI-powered productivity and self-management platform. It leverages a **Python-based microservices backend** deployed on **AWS Cloud Services**, paired with a **Flutter/Dart** mobile frontend. This architecture enables scalable, intelligent features like voice control, smart scheduling, unified communication, and secure document storage.
 
 ---
 
@@ -8,6 +9,7 @@
 
 - [Features](#features)
 - [Architecture Overview](#architecture-overview)
+- [Screenshots](#screenshots)
 - [Microservices](#microservices)
 - [Tech Stack](#tech-stack)
 - [Setup Instructions](#setup-instructions)
@@ -19,132 +21,131 @@
 
 ## 🚀 Features
 
-- Voice-based journaling and command execution
-- Smart calendar with color-coded events
+- Voice-based journaling and task execution
+- Smart calendar with AI-assisted scheduling
 - Unified inbox (WhatsApp, Email, SMS)
-- AI call handling and meeting scheduling
-- Document vault with biometric and OTP authentication
-- Budget planning and tracking
-- Notification system with push alerts
-- Modular personal/business profile switching
+- AI-powered phone call handler and assistant
+- Secure document vault with biometric + OTP verification
+- Budget tracking (weekly/monthly)
+- Notifications and alerts
+- Personal vs. business profile switching
+- Mobile UI built with Flutter
 
 ---
 
 ## 🧩 Architecture Overview
 
-MeMyselfI.ai is built using *microservices*, each dedicated to a specific functionality, enabling scalable development and deployment. Each service is loosely coupled, independently deployable, and communicates via well-defined REST APIs.
+MeMyselfI.ai follows a **microservices architecture**, where each service is implemented using **Python** and deployed independently via **AWS** (using Lambda, API Gateway, DynamoDB, etc.). The frontend is built in **Flutter** for a responsive and native mobile experience.
 
 ---
-## Screenshots
+
+## 📸 Screenshots
 
 ![App Screenshot](https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/IMG-20250728-WA0017.jpg)
 
+---
+
 ## 🔧 Microservices
 
-### 1. *Diary Service*
-- *Purpose:* Manage daily journal entries (voice/text)
-- *Endpoints:* /diary/create, /diary/list, /diary/delete/{id}
-- *Tech:* Python API, Firestore, Whisper API
+Each of the following services is written in **Python** and deployed to **AWS**:
 
-### 2. *Calendar Service*
-- *Purpose:* Manage events, reminders, and voice scheduling
-- *Endpoints:* /calendar/create, /calendar/events, /calendar/update/{id}
-- *Tech:* Python API, Firestore, async workers
+1. **Diary Service**
+   - Manage daily journal entries (voice/text)
+   - AWS: Lambda, DynamoDB, Whisper API
 
-### 3. *Inbox Service*
-- *Purpose:* Unified inbox for WhatsApp, Email, SMS
-- *Endpoints:* /inbox/messages, /inbox/send, /inbox/auto-reply
-- *Tech:* Python, Firebase, GPT-4, External APIs
+2. **Calendar Service**
+   - Smart scheduling and reminders
+   - AWS: Lambda, DynamoDB
 
-### 4. *Voice Assistant Service*
-- *Purpose:* Voice command processing and task execution
-- *Endpoints:* /voice/command, /voice/diary, /voice/calendar
-- *Tech:* Whisper API, GPT-4, TTS, Python
+3. **Inbox Service**
+   - Unified inbox with AI replies
+   - AWS: Lambda, GPT-4, External APIs
 
-### 5. *AI Call Agent Service*
-- *Purpose:* Handle and respond to phone calls with AI
-- *Endpoints:* /call/receive, /call/schedule
-- *Tech:* Twilio, Python, Firestore
+4. **Voice Assistant**
+   - Capture and interpret user voice commands
+   - AWS: Lambda, Whisper API, GPT-4
 
-### 6. *Vault Service*
-- *Purpose:* Secure document storage with OTP/PIN verification
-- *Endpoints:* /vault/upload, /vault/fetch, /vault/verify
-- *Tech:* Firebase Storage, Python, Firestore
+5. **AI Call Agent**
+   - Answer and schedule via voice calls
+   - AWS: Lambda, Twilio, DynamoDB
 
-### 7. *Budgeting Service*
-- *Purpose:* Track and manage weekly/monthly budgets
-- *Endpoints:* /budget/create, /budget/list, /budget/update/{id}
-- *Tech:* Python API, Firestore
+6. **Vault Service**
+   - Secure document upload, fetch, and OTP/PIN verification
+   - AWS: S3, Lambda, DynamoDB
 
-### 8. *Notification Service*
-- *Purpose:* Push notifications for reminders and alerts
-- *Endpoints:* /notify/send, /notify/configure
-- *Tech:* Firebase Cloud Messaging (FCM), Python
+7. **Budgeting Service**
+   - Budget creation, listing, and update
+   - AWS: Lambda, DynamoDB
 
-### 9. *API Integration Service*
-- *Purpose:* Manage and refresh third-party API credentials
-- *Endpoints:* /api-integrations/add, /api-integrations/refresh
-- *Tech:* Python, Firestore
+8. **Notification Service**
+   - Push alerts for events and reminders
+   - AWS: SNS, Lambda
 
-### 10. *Business Profile Service*
-- *Purpose:* Switch between personal and business modes
-- *Endpoints:* /profile/toggle, /profile/features
-- *Tech:* Python API, Firestore
+9. **API Integration Service**
+   - Manage and refresh external API tokens
+   - AWS: Secrets Manager, Lambda
+
+10. **Business Profile Service**
+    - Toggle between personal and business dashboards
+    - AWS: Lambda, DynamoDB
 
 ---
 
 ## 🧠 Tech Stack
 
-| Technology        | Purpose                             |
-|-------------------|-------------------------------------|
-| Python            | Backend APIs                        |
-| Firebase Firestore| Realtime NoSQL database             |
-| Firebase Storage  | Secure file and document storage    |
-| Firebase Cloud Messaging (FCM) | Push notifications     |
-| Whisper API       | Voice-to-text conversion            |
-| OpenAI GPT-4      | AI understanding and responses      |
-| Twilio            | Voice calls and scheduling          |
+| Component      | Technology                             |
+|----------------|-----------------------------------------|
+| Frontend       | Flutter, Dart                           |
+| Backend        | Python (Microservices)                  |
+| Cloud Services | AWS Lambda, API Gateway, DynamoDB, S3, SNS, Secrets Manager |
+| AI/ML          | OpenAI GPT-4, Whisper API               |
+| Telephony      | Twilio                                  |
 
 ---
 
 ## 📦 Setup Instructions
 
-> *Pre-requisites:* Python 3.8+, Firebase project, Twilio account, OpenAI API key
+> **Pre-requisites:** Python 3.8+, Flutter SDK, AWS CLI, OpenAI API key, Twilio account
 
-1. *Clone the repo:*
-bash
+1. **Clone the Repository:**
+```bash
 git clone https://github.com/yourusername/memyselfi.ai.git
 cd memyselfi.ai
+```
 
-
-2. *Install dependencies:*
-bash
+2. **Install Python dependencies:**
+```bash
 pip install -r requirements.txt
+```
 
+3. **Configure Environment:**
+Create a `.env` file:
+```
+OPENAI_API_KEY=your_key
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+TWILIO_ACCOUNT_SID=your_twilio_sid
+TWILIO_AUTH_TOKEN=your_twilio_token
+```
 
-3. *Configure environment variables:*
-Create a .env file with:
-
-OPENAI_API_KEY=your_openai_key
-FIREBASE_CREDENTIALS=path_to_your_service_account.json
-TWILIO_ACCOUNT_SID=your_sid
-TWILIO_AUTH_TOKEN=your_token
-
-
-4. *Run microservices locally:*
-Each service can be started independently. Example:
-bash
+4. **Deploy microservices to AWS (example using Zappa, Serverless, or CDK):**
+```bash
 cd services/diary
-python app.py
+zappa deploy dev
+```
 
+5. **Run Flutter frontend:**
+```bash
+cd frontend_flutter
+flutter run
+```
 
 ---
 
-## 🗂 Folder Structure (Example)
+## 🗂 Folder Structure
 
-
+```
 memyselfi.ai/
-│
 ├── services/
 │   ├── diary/
 │   ├── calendar/
@@ -156,42 +157,47 @@ memyselfi.ai/
 │   ├── notifications/
 │   ├── api_integrations/
 │   └── profile/
-│
+├── frontend_flutter/
+│   ├── lib/
+│   ├── assets/
 ├── shared/
 │   ├── utils/
 │   └── auth/
-│
-├── README.md
 ├── requirements.txt
 └── .env
-
+```
 
 ---
 
 ## 📢 Optimization Notes
 
-- Use async workers (e.g., Celery, asyncio) for heavy-lift tasks like GPT calls and voice transcription.
-- Cache frequent queries (e.g., calendars) to reduce Firestore reads.
-- Scale services independently using Docker/Kubernetes.
+- Use AWS Lambda for cost-efficient scalability
+- Cache frequently used data with AWS ElastiCache (optional)
+- Queue intensive tasks using SQS (if needed)
+- Secure secrets via AWS Secrets Manager
 
 ---
 
 ## 🤝 Contributing
 
-We welcome community contributions!
-
-1. Fork the repository
-2. Create a feature branch:
-   bash
-   git checkout -b feature/new-feature
-   
-3. Commit and push your changes
-4. Open a Pull Request with a clear description
+1. Fork this repo
+2. Create a new branch:
+```bash
+git checkout -b feature/your-feature
+```
+3. Commit and push:
+```bash
+git commit -m "Added a new feature"
+git push origin feature/your-feature
+```
+4. Submit a Pull Request
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License. See LICENSE for more details.
+Licensed under the MIT License. See `LICENSE` for details.
 
 ---
+
+> Built with ❤️ using Python, AWS, and Flutter
