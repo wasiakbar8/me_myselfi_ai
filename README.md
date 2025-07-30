@@ -37,7 +37,7 @@ MeMyselfI.ai is built using *microservices*, each dedicated to a specific functi
 ---
 ## Screenshots
 
-![App Screenshot]((https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/IMG-20250728-WA0017.jpg))
+![App Screenshot](https://github.com/AbdullahRafiq463/me_myselfi_ai/blob/main/IMG-20250728-WA0017.jpg)
 
 ## 🔧 Microservices
 
